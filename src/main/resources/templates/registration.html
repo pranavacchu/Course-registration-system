@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Course Registration - Course Registration System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Course Registration System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/courses">Courses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students">Students</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/registration">Registration</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2>Course Registration</h2>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Register Student for Course</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="registrationForm">
+                            <div class="mb-3">
+                                <label class="form-label">Select Student</label>
+                                <select class="form-select" id="studentSelect" required>
+                                    <option value="">Choose a student...</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Select Course</label>
+                                <select class="form-select" id="courseSelect" required>
+                                    <option value="">Choose a course...</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="registerStudent()">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Drop Course</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="dropForm">
+                            <div class="mb-3">
+                                <label class="form-label">Select Student</label>
+                                <select class="form-select" id="dropStudentSelect" required>
+                                    <option value="">Choose a student...</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Select Course to Drop</label>
+                                <select class="form-select" id="dropCourseSelect" required>
+                                    <option value="">Choose a course...</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="dropCourse()">Drop Course</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Load students and courses when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStudents();
+            loadCourses();
+        });
+
+        function loadStudents() {
+            fetch('/api/students')
+                .then(response => response.json())
+                .then(students => {
+                    const studentSelect = document.getElementById('studentSelect');
+                    const dropStudentSelect = document.getElementById('dropStudentSelect');
+                    
+                    // Clear existing options
+                    studentSelect.innerHTML = '<option value="">Choose a student...</option>';
+                    dropStudentSelect.innerHTML = '<option value="">Choose a student...</option>';
+                    
+                    // Add student options
+                    students.forEach(student => {
+                        const option = `<option value="${student.id}">${student.name} (${student.studentId})</option>`;
+                        studentSelect.innerHTML += option;
+                        dropStudentSelect.innerHTML += option;
+                    });
+                })
+                .catch(error => console.error('Error loading students:', error));
+        }
+
+        function loadCourses() {
+            fetch('/api/courses')
+                .then(response => response.json())
+                .then(courses => {
+                    const courseSelect = document.getElementById('courseSelect');
+                    const dropCourseSelect = document.getElementById('dropCourseSelect');
+                    
+                    // Clear existing options
+                    courseSelect.innerHTML = '<option value="">Choose a course...</option>';
+                    dropCourseSelect.innerHTML = '<option value="">Choose a course...</option>';
+                    
+                    // Add course options
+                    courses.forEach(course => {
+                        const option = `<option value="${course.id}">${course.courseCode} - ${course.courseName}</option>`;
+                        courseSelect.innerHTML += option;
+                        dropCourseSelect.innerHTML += option;
+                    });
+                })
+                .catch(error => console.error('Error loading courses:', error));
+        }
+
+        function registerStudent() {
+            const studentId = document.getElementById('studentSelect').value;
+            const courseId = document.getElementById('courseSelect').value;
+            
+            if (!studentId || !courseId) {
+                alert('Please select both a student and a course');
+                return;
+            }
+
+            fetch(`/api/students/${studentId}/enroll/${courseId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(() => {
+                alert('Student registered successfully!');
+                loadStudents();
+                loadCourses();
+            })
+            .catch(error => {
+                console.error('Error registering student:', error);
+                alert('Failed to register student. Please try again.');
+            });
+        }
+
+        function dropCourse() {
+            const studentId = document.getElementById('dropStudentSelect').value;
+            const courseId = document.getElementById('dropCourseSelect').value;
+            
+            if (!studentId || !courseId) {
+                alert('Please select both a student and a course');
+                return;
+            }
+
+            fetch(`/api/students/${studentId}/drop/${courseId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(() => {
+                alert('Course dropped successfully!');
+                loadStudents();
+                loadCourses();
+            })
+            .catch(error => {
+                console.error('Error dropping course:', error);
+                alert('Failed to drop course. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html> 

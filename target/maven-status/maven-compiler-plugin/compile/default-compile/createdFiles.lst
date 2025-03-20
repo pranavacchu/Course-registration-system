@@ -1,0 +1,9 @@
+com\example\courseregistrationsystem\repository\StudentRepository.class
+com\example\courseregistrationsystem\CourseRegistrationSystemApplication.class
+com\example\courseregistrationsystem\controller\CourseController.class
+com\example\courseregistrationsystem\repository\CourseRepository.class
+com\example\courseregistrationsystem\model\Course.class
+com\example\courseregistrationsystem\service\CourseService.class
+com\example\courseregistrationsystem\service\StudentService.class
+com\example\courseregistrationsystem\model\Student.class
+com\example\courseregistrationsystem\controller\StudentController.class
