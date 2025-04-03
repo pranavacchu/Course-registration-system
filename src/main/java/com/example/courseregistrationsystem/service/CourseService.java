@@ -1,26 +1,31 @@
 package com.example.courseregistrationsystem.service;
 
-import com.example.courseregistrationsystem.model.Course;
-import com.example.courseregistrationsystem.repository.CourseRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import com.example.courseregistrationsystem.model.Course;
+import com.example.courseregistrationsystem.repository.CourseRepository;
 
 @Service
+@Transactional
 public class CourseService {
     
     @Autowired
     private CourseRepository courseRepository;
     
     public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+        return courseRepository.findAllWithInstructorsAndStudents();
+    }
+    
+    public List<Course> getAvailableCourses() {
+        return courseRepository.findAllWithInstructorsAndStudents();
     }
     
     public Course getCourseById(Long id) {
-        Optional<Course> course = courseRepository.findById(id);
-        return course.orElse(null);
+        return courseRepository.findById(id).orElse(null);
     }
     
     public Course createCourse(Course course) {
@@ -35,6 +40,7 @@ public class CourseService {
             course.setDescription(courseDetails.getDescription());
             course.setCredits(courseDetails.getCredits());
             course.setCapacity(courseDetails.getCapacity());
+            course.setInstructor(courseDetails.getInstructor());
             return courseRepository.save(course);
         }
         return null;

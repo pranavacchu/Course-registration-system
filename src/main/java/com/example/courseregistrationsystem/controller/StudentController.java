@@ -52,13 +52,13 @@ public class StudentController {
     }
     
     @PostMapping("/{studentId}/enroll/{courseId}")
-    public ResponseEntity<Student> enrollInCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
+    public ResponseEntity<Student> enrollInCourse(@PathVariable String studentId, @PathVariable Long courseId) {
         Student student = studentService.enrollInCourse(studentId, courseId);
         return student != null ? ResponseEntity.ok(student) : ResponseEntity.badRequest().build();
     }
     
     @PostMapping("/{studentId}/drop/{courseId}")
-    public ResponseEntity<Student> dropCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
+    public ResponseEntity<Student> dropCourse(@PathVariable String studentId, @PathVariable Long courseId) {
         Student student = studentService.dropCourse(studentId, courseId);
         return student != null ? ResponseEntity.ok(student) : ResponseEntity.badRequest().build();
     }

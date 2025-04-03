@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard - Course Registration System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Admin Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/dashboard">Dashboard</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Success/Error Messages -->
+        <div th:if="${success}" class="alert alert-success" role="alert">
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Admin Information</h5>
+                        <p class="card-text">
+                            <strong>ID:</strong> <span th:text="${admin.adminId}"></span><br>
+                            <strong>Name:</strong> <span th:text="${admin.username}"></span><br>
+                            <strong>Email:</strong> <span th:text="${admin.email}"></span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- System Statistics -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">System Statistics</h5>
+                        <p class="card-text">
+                            <strong>Total Students:</strong> <span th:text="${totalStudents}"></span><br>
+                            <strong>Total Instructors:</strong> <span th:text="${totalInstructors}"></span><br>
+                            <strong>Total Courses:</strong> <span th:text="${totalCourses}"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <!-- Course Management -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title">Course Management</h5>
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+                                Add New Course
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Name</th>
+                                        <th>Instructor</th>
+                                        <th>Credits</th>
+                                        <th>Enrolled/Capacity</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="course : ${courses}">
+                                        <td th:text="${course.courseCode}"></td>
+                                        <td th:text="${course.courseName}"></td>
+                                        <td th:text="${course.instructor != null ? course.instructor.username : 'Not Assigned'}"></td>
+                                        <td th:text="${course.credits}"></td>
+                                        <td th:text="${#sets.size(course.enrolledStudents) + '/' + course.capacity}"></td>
+                                        <td>
+                                            <button type="button" class="btn btn-info btn-sm" 
+                                                    data-bs-toggle="modal" 
+                                                    th:data-bs-target="'#viewCourseModal' + ${course.id}">
+                                                View
+                                            </button>
+                                            <form th:action="@{/admin/courses/delete}" method="post" style="display: inline;">
+                                                <input type="hidden" name="courseId" th:value="${course.id}">
+                                                <button type="submit" class="btn btn-danger btn-sm" 
+                                                        onclick="return confirm('Are you sure you want to delete this course?')">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management Tabs -->
+                <ul class="nav nav-tabs" id="userTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="students-tab" data-bs-toggle="tab" data-bs-target="#students" type="button">
+                            Students
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="instructors-tab" data-bs-toggle="tab" data-bs-target="#instructors" type="button">
+                            Instructors
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="userTabsContent">
+                    <!-- Students Tab -->
+                    <div class="tab-pane fade show active" id="students" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Enrolled Courses</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="student : ${students}">
+                                                <td th:text="${student.studentId}"></td>
+                                                <td th:text="${student.username}"></td>
+                                                <td th:text="${student.email}"></td>
+                                                <td th:text="${#sets.size(student.enrolledCourses)}"></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-info btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            th:data-bs-target="'#viewStudentModal' + ${student.id}">
+                                                        View Details
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instructors Tab -->
+                    <div class="tab-pane fade" id="instructors" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Assigned Courses</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="instructor : ${instructors}">
+                                                <td th:text="${instructor.instructorId}"></td>
+                                                <td th:text="${instructor.username}"></td>
+                                                <td th:text="${instructor.email}"></td>
+                                                <td th:text="${#sets.size(instructor.courses)}"></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-info btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            th:data-bs-target="'#viewInstructorModal' + ${instructor.id}">
+                                                        View Details
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Course Modal -->
+    <div class="modal fade" id="addCourseModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Course</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/admin/courses/add}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="courseCode" class="form-label">Course Code</label>
+                            <input type="text" class="form-control" id="courseCode" name="courseCode" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="courseName" class="form-label">Course Name</label>
+                            <input type="text" class="form-control" id="courseName" name="courseName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="credits" class="form-label">Credits</label>
+                            <input type="number" class="form-control" id="credits" name="credits" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="capacity" class="form-label">Capacity</label>
+                            <input type="number" class="form-control" id="capacity" name="capacity" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="instructorId" class="form-label">Instructor</label>
+                            <select class="form-control" id="instructorId" name="instructorId">
+                                <option value="">Select Instructor</option>
+                                <option th:each="instructor : ${instructors}"
+                                        th:value="${instructor.id}"
+                                        th:text="${instructor.username}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Course</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course View Modals -->
+    <div th:each="course : ${courses}" th:id="'viewCourseModal' + ${course.id}" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:text="${course.courseName + ' Details'}"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Course Information</h6>
+                    <p>
+                        <strong>Code:</strong> <span th:text="${course.courseCode}"></span><br>
+                        <strong>Credits:</strong> <span th:text="${course.credits}"></span><br>
+                        <strong>Capacity:</strong> <span th:text="${course.capacity}"></span><br>
+                        <strong>Instructor:</strong> <span th:text="${course.instructor != null ? course.instructor.username : 'Not Assigned'}"></span>
+                    </p>
+                    
+                    <h6>Enrolled Students</h6>
+                    <div th:if="${#sets.isEmpty(course.enrolledStudents)}" class="alert alert-info">
+                        No students enrolled yet.
+                    </div>
+                    <div th:unless="${#sets.isEmpty(course.enrolledStudents)}" class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="student : ${course.enrolledStudents}">
+                                    <td th:text="${student.studentId}"></td>
+                                    <td th:text="${student.username}"></td>
+                                    <td th:text="${student.email}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student View Modals -->
+    <div th:each="student : ${students}" th:id="'viewStudentModal' + ${student.id}" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:text="${student.username + ' Details'}"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Student Information</h6>
+                    <p>
+                        <strong>ID:</strong> <span th:text="${student.studentId}"></span><br>
+                        <strong>Email:</strong> <span th:text="${student.email}"></span>
+                    </p>
+                    
+                    <h6>Enrolled Courses</h6>
+                    <div th:if="${#sets.isEmpty(student.enrolledCourses)}" class="alert alert-info">
+                        Not enrolled in any courses.
+                    </div>
+                    <div th:unless="${#sets.isEmpty(student.enrolledCourses)}" class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Credits</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="course : ${student.enrolledCourses}">
+                                    <td th:text="${course.courseCode}"></td>
+                                    <td th:text="${course.courseName}"></td>
+                                    <td th:text="${course.credits}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructor View Modals -->
+    <div th:each="instructor : ${instructors}" th:id="'viewInstructorModal' + ${instructor.id}" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:text="${instructor.username + ' Details'}"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Instructor Information</h6>
+                    <p>
+                        <strong>ID:</strong> <span th:text="${instructor.instructorId}"></span><br>
+                        <strong>Email:</strong> <span th:text="${instructor.email}"></span>
+                    </p>
+                    
+                    <h6>Assigned Courses</h6>
+                    <div th:if="${#sets.isEmpty(instructor.courses)}" class="alert alert-info">
+                        No courses assigned.
+                    </div>
+                    <div th:unless="${#sets.isEmpty(instructor.courses)}" class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Students</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="course : ${instructor.courses}">
+                                    <td th:text="${course.courseCode}"></td>
+                                    <td th:text="${course.courseName}"></td>
+                                    <td th:text="${#sets.size(course.enrolledStudents) + '/' + course.capacity}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
