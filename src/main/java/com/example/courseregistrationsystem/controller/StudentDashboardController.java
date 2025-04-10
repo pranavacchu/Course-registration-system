@@ -31,7 +31,7 @@ public class StudentDashboardController {
             return "redirect:/student/login";
         }
         
-        Student student = studentService.findByStudentId(studentId);
+        Student student = studentService.findByStudentIdWithCourses(studentId);
         if (student == null) {
             session.invalidate();
             redirectAttributes.addFlashAttribute("error", "Student not found");

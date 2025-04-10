@@ -1,56 +1,69 @@
 package com.example.courseregistrationsystem.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.courseregistrationsystem.model.Course;
+import com.example.courseregistrationsystem.model.Instructor;
 import com.example.courseregistrationsystem.repository.CourseRepository;
 
 @Service
 @Transactional
 public class CourseService {
     
+    private final CourseRepository courseRepository;
+    
     @Autowired
-    private CourseRepository courseRepository;
+    public CourseService(CourseRepository courseRepository) {
+        this.courseRepository = courseRepository;
+    }
     
     public List<Course> getAllCourses() {
-        return courseRepository.findAllWithInstructorsAndStudents();
+        return courseRepository.findAll();
     }
     
     public List<Course> getAvailableCourses() {
         return courseRepository.findAllWithInstructorsAndStudents();
     }
     
-    public Course getCourseById(Long id) {
-        return courseRepository.findById(id).orElse(null);
+    public Optional<Course> getCourseById(Long id) {
+        return courseRepository.findById(id);
     }
     
     public Course createCourse(Course course) {
         return courseRepository.save(course);
     }
     
-    public Course updateCourse(Long id, Course courseDetails) {
-        Course course = getCourseById(id);
-        if (course != null) {
-            course.setCourseCode(courseDetails.getCourseCode());
-            course.setCourseName(courseDetails.getCourseName());
-            course.setDescription(courseDetails.getDescription());
-            course.setCredits(courseDetails.getCredits());
-            course.setCapacity(courseDetails.getCapacity());
-            course.setInstructor(courseDetails.getInstructor());
-            return courseRepository.save(course);
+    public Course updateCourse(Course course) {
+        if (!courseRepository.existsById(course.getId())) {
+            throw new IllegalArgumentException("Course not found");
         }
-        return null;
+        return courseRepository.save(course);
     }
     
     public void deleteCourse(Long id) {
         courseRepository.deleteById(id);
     }
     
-    public Course findByCourseCode(String courseCode) {
+    public Optional<Course> findByCourseCode(String courseCode) {
         return courseRepository.findByCourseCode(courseCode);
+    }
+    
+    public List<Course> getCoursesByInstructor(Instructor instructor) {
+        return courseRepository.findByInstructorWithEnrolledStudents(instructor);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Course> findByInstructorWithEnrolledStudents(Instructor instructor) {
+        return courseRepository.findByInstructorWithEnrolledStudents(instructor);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Course> getAllCoursesWithRelationships() {
+        return courseRepository.findAllWithInstructorsAndStudents();
     }
 } 

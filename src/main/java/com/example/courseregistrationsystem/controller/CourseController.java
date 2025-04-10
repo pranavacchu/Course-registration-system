@@ -22,8 +22,9 @@ public class CourseController {
     
     @GetMapping("/{id}")
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
-        Course course = courseService.getCourseById(id);
-        return course != null ? ResponseEntity.ok(course) : ResponseEntity.notFound().build();
+        return courseService.getCourseById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
     
     @PostMapping
@@ -33,13 +34,25 @@ public class CourseController {
     
     @PutMapping("/{id}")
     public ResponseEntity<Course> updateCourse(@PathVariable Long id, @RequestBody Course courseDetails) {
-        Course course = courseService.updateCourse(id, courseDetails);
-        return course != null ? ResponseEntity.ok(course) : ResponseEntity.notFound().build();
+        return courseService.getCourseById(id)
+            .map(existingCourse -> {
+                existingCourse.setCourseCode(courseDetails.getCourseCode());
+                existingCourse.setCourseName(courseDetails.getCourseName());
+                existingCourse.setDescription(courseDetails.getDescription());
+                existingCourse.setCredits(courseDetails.getCredits());
+                existingCourse.setCapacity(courseDetails.getCapacity());
+                existingCourse.setInstructor(courseDetails.getInstructor());
+                return ResponseEntity.ok(courseService.updateCourse(existingCourse));
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
-        courseService.deleteCourse(id);
-        return ResponseEntity.ok().build();
+        if (courseService.getCourseById(id).isPresent()) {
+            courseService.deleteCourse(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 } 

@@ -7,12 +7,15 @@ import org.springframework.stereotype.Repository;
 
 import com.example.courseregistrationsystem.model.Instructor;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface InstructorRepository extends JpaRepository<Instructor, Long> {
-    Instructor findByInstructorId(String instructorId);
+    Optional<Instructor> findByInstructorId(String instructorId);
     Instructor findByUsername(String username);
     Instructor findByEmail(String email);
     
     @Query("SELECT i FROM Instructor i LEFT JOIN FETCH i.courses WHERE i.instructorId = :instructorId")
-    Instructor findByInstructorIdWithCourses(@Param("instructorId") String instructorId);
+    Optional<Instructor> findByInstructorIdWithCourses(String instructorId);
 } 

@@ -68,10 +68,10 @@
                                 </thead>
                                 <tbody>
                                     <tr th:each="course : ${student.enrolledCourses}">
-                                        <td th:text="${course.courseCode}"></td>
-                                        <td th:text="${course.courseName}"></td>
+                                        <td th:text="${course.courseCode ?: 'N/A'}"></td>
+                                        <td th:text="${course.courseName ?: 'N/A'}"></td>
                                         <td th:text="${course.instructor != null ? course.instructor.username : 'Not Assigned'}"></td>
-                                        <td th:text="${course.credits}"></td>
+                                        <td th:text="${course.credits ?: 'N/A'}"></td>
                                         <td>
                                             <form th:action="@{/student/courses/drop}" method="post" style="display: inline;">
                                                 <input type="hidden" name="courseId" th:value="${course.id}">
@@ -109,16 +109,16 @@
                                 </thead>
                                 <tbody>
                                     <tr th:each="course : ${availableCourses}">
-                                        <td th:text="${course.courseCode}"></td>
-                                        <td th:text="${course.courseName}"></td>
+                                        <td th:text="${course.courseCode ?: 'N/A'}"></td>
+                                        <td th:text="${course.courseName ?: 'N/A'}"></td>
                                         <td th:text="${course.instructor != null ? course.instructor.username : 'Not Assigned'}"></td>
-                                        <td th:text="${course.credits}"></td>
-                                        <td th:text="${#sets.size(course.enrolledStudents) + '/' + course.capacity}"></td>
+                                        <td th:text="${course.credits ?: 'N/A'}"></td>
+                                        <td th:text="${(course.enrolledStudents != null ? #sets.size(course.enrolledStudents) : 0) + '/' + (course.capacity ?: 0)}"></td>
                                         <td>
                                             <form th:action="@{/student/courses/enroll}" method="post" style="display: inline;">
                                                 <input type="hidden" name="courseId" th:value="${course.id}">
                                                 <button type="submit" class="btn btn-primary btn-sm" 
-                                                        th:disabled="${#sets.size(course.enrolledStudents) >= course.capacity}">
+                                                        th:disabled="${course.enrolledStudents != null && #sets.size(course.enrolledStudents) >= (course.capacity ?: 0)}">
                                                     Enroll
                                                 </button>
                                             </form>

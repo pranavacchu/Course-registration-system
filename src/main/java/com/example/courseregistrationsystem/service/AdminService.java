@@ -3,14 +3,20 @@ package com.example.courseregistrationsystem.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.courseregistrationsystem.model.Admin;
 import com.example.courseregistrationsystem.repository.AdminRepository;
 
 @Service
+@Transactional
 public class AdminService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
     
     @Autowired
     private AdminRepository adminRepository;
@@ -45,6 +51,12 @@ public class AdminService {
     }
     
     public Admin findByAdminId(String adminId) {
-        return adminRepository.findByAdminId(adminId);
+        try {
+            return adminRepository.findByAdminId(adminId)
+                .orElseThrow(() -> new RuntimeException("Admin not found with ID: " + adminId));
+        } catch (Exception e) {
+            logger.error("Error finding admin with ID: {}", adminId, e);
+            return null;
+        }
     }
 } 

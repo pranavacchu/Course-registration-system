@@ -1,24 +1,29 @@
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\CourseRegistrationSystemApplication.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\model\User.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\CourseController.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\repository\InstructorRepository.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\repository\StudentRepository.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\InstructorDashboardController.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\WebController.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\service\StudentService.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\service\AdminService.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\repository\AdminRepository.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\service\CourseService.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\RegistrationController.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\model\Admin.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\model\Student.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\repository\CourseRepository.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\model\Course.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\CustomErrorController.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\service\InstructorService.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\LoginController.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\config\DataInitializer.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\AdminDashboardController.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\StudentDashboardController.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\model\Instructor.java
-C:\Users\prana\OneDrive\Desktop\SEM 6\OOAD\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\StudentController.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\repository\InstructorRepository.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\RegistrationController.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\model\User.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\model\Instructor.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\model\Student.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\repository\StudentRepository.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\CourseController.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\config\DataInitializer.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\StudentController.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\service\CourseContentService.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\repository\GradeRepository.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\CustomErrorController.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\repository\CourseRepository.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\CourseRegistrationSystemApplication.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\service\AdminService.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\repository\CourseContentRepository.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\StudentDashboardController.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\model\Course.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\service\StudentService.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\service\CourseService.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\repository\AdminRepository.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\service\GradeService.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\InstructorDashboardController.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\model\CourseContent.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\model\Grade.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\AdminDashboardController.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\service\InstructorService.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\controller\LoginController.java
+C:\Users\Pranav\Documents\OOAD_Project\Course-registration-system\src\main\java\com\example\courseregistrationsystem\model\Admin.java

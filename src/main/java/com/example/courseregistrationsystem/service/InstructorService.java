@@ -1,6 +1,7 @@
 package com.example.courseregistrationsystem.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,16 +22,22 @@ public class InstructorService {
         return instructorRepository.findAll();
     }
     
-    public Instructor getInstructorById(Long id) {
-        return instructorRepository.findById(id).orElse(null);
+    public Optional<Instructor> getInstructorById(Long id) {
+        return instructorRepository.findById(id);
     }
     
     public Instructor findByInstructorId(String instructorId) {
-        return instructorRepository.findByInstructorId(instructorId);
+        return instructorRepository.findByInstructorId(instructorId)
+            .orElseThrow(() -> new RuntimeException("Instructor not found with ID: " + instructorId));
     }
     
     public Instructor findByInstructorIdWithCourses(String instructorId) {
-        return instructorRepository.findByInstructorIdWithCourses(instructorId);
+        return instructorRepository.findByInstructorIdWithCourses(instructorId)
+            .orElseThrow(() -> new RuntimeException("Instructor not found with ID: " + instructorId));
+    }
+    
+    public Instructor findByEmail(String email) {
+        return instructorRepository.findByEmail(email);
     }
     
     public Instructor createInstructor(Instructor instructor) {
@@ -47,15 +54,11 @@ public class InstructorService {
         return instructorRepository.save(instructor);
     }
     
-    public Instructor updateInstructor(Long id, Instructor instructorDetails) {
-        Instructor instructor = getInstructorById(id);
-        if (instructor != null) {
-            instructor.setUsername(instructorDetails.getUsername());
-            instructor.setEmail(instructorDetails.getEmail());
-            instructor.setInstructorId(instructorDetails.getInstructorId());
-            return instructorRepository.save(instructor);
+    public Instructor updateInstructor(Instructor instructor) {
+        if (!instructorRepository.existsById(instructor.getId())) {
+            throw new IllegalArgumentException("Instructor not found");
         }
-        return null;
+        return instructorRepository.save(instructor);
     }
     
     public void deleteInstructor(Long id) {
