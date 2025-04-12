@@ -93,9 +93,9 @@ public class InstructorDashboardController {
         }
     }
     
-    @PostMapping("/course/{courseId}/content")
+    @PostMapping("/courses/content/add")
     @Transactional
-    public String addCourseContent(@PathVariable Long courseId, 
+    public String addCourseContent(@RequestParam Long courseId, 
                                  @RequestParam String title,
                                  @RequestParam String description,
                                  @RequestParam String contentType,
@@ -185,52 +185,96 @@ public class InstructorDashboardController {
                              @RequestParam("grade") String grade,
                              HttpSession session,
                              Model model) {
+        // Validate session
         String instructorId = (String) session.getAttribute("instructorId");
         if (instructorId == null) {
             return "redirect:/instructor/login";
         }
 
         try {
+            // Validate instructor
             Instructor instructor = instructorService.findByInstructorId(instructorId);
             if (instructor == null) {
                 session.invalidate();
                 return "redirect:/instructor/login";
             }
 
-            // Get the course and verify instructor owns it
+            // Validate course
             Optional<Course> courseOpt = courseService.getCourseById(courseId);
-            if (courseOpt.isEmpty() || !courseOpt.get().getInstructor().equals(instructor)) {
-                model.addAttribute("error", "Course not found or you don't have permission to grade this course");
+            if (courseOpt.isEmpty()) {
+                model.addAttribute("error", "Course not found");
                 return showDashboard(model, session);
             }
             Course course = courseOpt.get();
 
-            // Get the student
+            // Verify instructor owns the course
+            if (!course.getInstructor().equals(instructor)) {
+                model.addAttribute("error", "You don't have permission to grade this course");
+                return showDashboard(model, session);
+            }
+
+            // Validate student
             Student student = studentService.findByStudentId(studentId);
             if (student == null) {
                 model.addAttribute("error", "Student not found");
                 return showDashboard(model, session);
             }
 
-            // Verify student is enrolled in the course
+            // Verify student enrollment
             if (!course.getEnrolledStudents().contains(student)) {
                 model.addAttribute("error", "Student is not enrolled in this course");
                 return showDashboard(model, session);
             }
 
-            // Update the grade
-            try {
-                studentService.updateGrade(studentId, courseId, grade);
+            // Update grade
+            boolean success = studentService.updateGrade(studentId, courseId, grade);
+            if (success) {
                 model.addAttribute("success", "Grade updated successfully");
-            } catch (RuntimeException e) {
-                model.addAttribute("error", e.getMessage());
+            } else {
+                model.addAttribute("error", "Failed to update grade. Please check the grade format (A, B, C, D, or F)");
             }
             
             return showDashboard(model, session);
         } catch (Exception e) {
-            logger.error("Error grading student", e);
+            logger.error("Error in gradeStudent: " + e.getMessage(), e);
             model.addAttribute("error", "An unexpected error occurred while updating the grade");
             return showDashboard(model, session);
         }
+    }
+
+    @PostMapping("/courses/content/delete/{contentId}")
+    @Transactional
+    public String deleteCourseContent(@PathVariable Long contentId,
+                                    HttpSession session,
+                                    RedirectAttributes redirectAttributes) {
+        String instructorId = (String) session.getAttribute("instructorId");
+        if (instructorId == null) {
+            return "redirect:/instructor/login";
+        }
+        
+        Instructor instructor = instructorService.findByInstructorId(instructorId);
+        if (instructor == null) {
+            session.invalidate();
+            return "redirect:/instructor/login";
+        }
+        
+        try {
+            CourseContent content = courseContentService.getCourseContentById(contentId);
+            Course course = content.getCourse();
+            
+            // Check if instructor owns the course
+            if (!course.getInstructor().getId().equals(instructor.getId())) {
+                redirectAttributes.addFlashAttribute("error", "You don't have permission to delete this content");
+                return "redirect:/instructor/dashboard";
+            }
+            
+            courseContentService.deleteCourseContent(contentId);
+            redirectAttributes.addFlashAttribute("success", "Course content deleted successfully");
+        } catch (Exception e) {
+            logger.error("Error deleting course content", e);
+            redirectAttributes.addFlashAttribute("error", "Failed to delete course content");
+        }
+        
+        return "redirect:/instructor/dashboard";
     }
 } 

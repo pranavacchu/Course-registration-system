@@ -136,29 +136,43 @@ public class StudentService {
     }
 
     @Transactional
-    public void updateGrade(String studentId, Long courseId, String grade) {
+    public boolean updateGrade(String studentId, Long courseId, String grade) {
         try {
+            // Validate inputs
+            if (studentId == null || courseId == null || grade == null) {
+                logger.warning("Invalid input parameters for grade update");
+                return false;
+            }
+
+            // Find student
             Student student = findByStudentId(studentId);
             if (student == null) {
-                throw new RuntimeException("Student not found");
+                logger.warning("Student not found with ID: " + studentId);
+                return false;
             }
 
             // Validate grade format
             if (!isValidGrade(grade)) {
-                throw new RuntimeException("Invalid grade format. Please use A, B, C, D, or F");
+                logger.warning("Invalid grade format: " + grade);
+                return false;
             }
 
-            // Update the grade in the student's grades map
-            Map<Long, String> grades = student.getGrades();
+            // Initialize grades map if null
+            Map<String, String> grades = student.getGrades();
             if (grades == null) {
                 grades = new HashMap<>();
                 student.setGrades(grades);
             }
-            grades.put(courseId, grade);
+
+            // Update grade
+            grades.put(courseId.toString(), grade);
             
+            // Save changes
             studentRepository.save(student);
+            logger.info("Successfully updated grade for student " + studentId + " in course " + courseId);
+            return true;
         } catch (Exception e) {
-            logger.severe("Error updating grade for student " + studentId + " in course " + courseId + ": " + e.getMessage());
+            logger.severe("Error in updateGrade: " + e.getMessage());
             throw new RuntimeException("Failed to update grade: " + e.getMessage());
         }
     }

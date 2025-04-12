@@ -205,8 +205,7 @@
                                                     th:data-bs-target="'#editCourseModal' + ${course?.id}">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
-                                            <form th:action="@{/admin/courses/delete}" method="post" style="display: inline;">
-                                                <input type="hidden" name="courseId" th:value="${course?.id}">
+                                            <form th:action="@{/admin/courses/delete/{id}(id=${course?.id})}" method="post" style="display: inline;">
                                                 <button type="submit" class="btn btn-danger btn-sm" 
                                                         onclick="return confirm('Are you sure you want to delete this course?')">
                                                     <i class="bi bi-trash"></i>

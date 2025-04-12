@@ -206,11 +206,11 @@
                                                             <td th:text="${student.username}"></td>
                                                             <td th:text="${student.email}"></td>
                                                             <td>
-                                                                <span th:if="${student.grades != null && student.grades.containsKey(course.id)}" 
-                                                                      th:text="${student.grades.get(course.id)}" 
+                                                                <span th:if="${student.grades != null && student.grades.containsKey(course.id.toString())}" 
+                                                                      th:text="${student.grades.get(course.id.toString())}" 
                                                                       class="badge bg-success">
                                                                 </span>
-                                                                <span th:unless="${student.grades != null && student.grades.containsKey(course.id)}" 
+                                                                <span th:unless="${student.grades != null && student.grades.containsKey(course.id.toString())}" 
                                                                       class="badge bg-secondary">
                                                                     Not Graded
                                                                 </span>
@@ -305,7 +305,7 @@
                     </div>
                     <div class="modal-body">
                         <form th:action="@{/instructor/students/grade}" method="post">
-                            <input type="hidden" name="studentId" th:value="${student.id}">
+                            <input type="hidden" name="studentId" th:value="${student.studentId}">
                             <input type="hidden" name="courseId" th:value="${course.id}">
                             <div class="mb-3">
                                 <label class="form-label">Student</label>

@@ -45,8 +45,22 @@ public class CourseService {
         return courseRepository.save(course);
     }
     
+    @Transactional
     public void deleteCourse(Long id) {
-        courseRepository.deleteById(id);
+        Course course = courseRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Course not found with id: " + id));
+        
+        // Clear the enrolled students relationship
+        course.getEnrolledStudents().clear();
+        
+        // Clear the instructor relationship
+        course.setInstructor(null);
+        
+        // Save the changes to clear relationships
+        courseRepository.save(course);
+        
+        // Now delete the course (this will cascade to course content due to CascadeType.ALL)
+        courseRepository.delete(course);
     }
     
     public Optional<Course> findByCourseCode(String courseCode) {

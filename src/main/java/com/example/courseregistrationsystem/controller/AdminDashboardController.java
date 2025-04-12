@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,17 +187,36 @@ public class AdminDashboardController {
         return "redirect:/admin/dashboard";
     }
 
-    @PostMapping("/courses/delete")
-    public String deleteCourse(@RequestParam Long courseId, RedirectAttributes redirectAttributes) {
-        logger.info("Deleting course with ID: {}", courseId);
+    @PostMapping("/courses/delete/{courseId}")
+    @Transactional
+    public String deleteCourse(@PathVariable Long courseId,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+        String adminId = (String) session.getAttribute("adminId");
+        if (adminId == null) {
+            redirectAttributes.addFlashAttribute("error", "Please login first");
+            return "redirect:/admin/login";
+        }
+
         try {
+            // Check if course exists
+            Course course = courseService.getCourseById(courseId)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+
+            // Check if there are any enrolled students
+            if (course.getEnrolledStudents() != null && !course.getEnrolledStudents().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Cannot delete course with enrolled students");
+                return "redirect:/admin/dashboard";
+            }
+
+            // Delete the course
             courseService.deleteCourse(courseId);
-            logger.info("Course deleted successfully: {}", courseId);
             redirectAttributes.addFlashAttribute("success", "Course deleted successfully");
         } catch (Exception e) {
-            logger.error("Failed to delete course: {}", e.getMessage(), e);
+            logger.error("Error deleting course: {}", e.getMessage(), e);
             redirectAttributes.addFlashAttribute("error", "Failed to delete course: " + e.getMessage());
         }
+
         return "redirect:/admin/dashboard";
     }
 } 

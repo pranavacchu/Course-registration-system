@@ -18,7 +18,9 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.MapKeyColumn;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -45,8 +47,11 @@ public class Student extends User {
     )
     private Set<Course> enrolledCourses = new HashSet<>();
     
-    @Transient
-    private Map<Long, String> grades = new HashMap<>();
+    @ElementCollection
+    @CollectionTable(name = "student_grades", joinColumns = @JoinColumn(name = "student_id"))
+    @MapKeyColumn(name = "course_id")
+    @Column(name = "grade")
+    private Map<String, String> grades = new HashMap<>();
     
     @PrePersist
     public void prePersist() {
