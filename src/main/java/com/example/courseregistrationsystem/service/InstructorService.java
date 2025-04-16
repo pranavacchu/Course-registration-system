@@ -42,7 +42,7 @@ public class InstructorService {
     
     public Instructor createInstructor(Instructor instructor) {
         // Check if instructor already exists
-        if (instructorRepository.findByInstructorId(instructor.getInstructorId()) != null) {
+        if (instructorRepository.findByInstructorId(instructor.getInstructorId()).isPresent()) {
             throw new RuntimeException("Instructor ID already exists");
         }
         

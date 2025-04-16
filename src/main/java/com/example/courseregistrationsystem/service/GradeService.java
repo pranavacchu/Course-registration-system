@@ -31,6 +31,10 @@ public class GradeService {
         return gradeRepository.findByCourseId(courseId);
     }
 
+    public List<Grade> getGradesByStudentIdAndCourseId(Long studentId, Long courseId) {
+        return gradeRepository.findByStudentIdAndCourseIdOrderByGradedAtDesc(studentId, courseId);
+    }
+
     public Grade getGradeById(Long id) {
         return gradeRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Grade not found"));

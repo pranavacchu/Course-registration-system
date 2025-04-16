@@ -11,8 +11,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.courseregistrationsystem.model.Student;
 import com.example.courseregistrationsystem.service.CourseService;
 import com.example.courseregistrationsystem.service.StudentService;
+import com.example.courseregistrationsystem.model.Course;
+import com.example.courseregistrationsystem.model.Grade;
+import com.example.courseregistrationsystem.service.GradeService;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import java.util.HashMap;
 
 @Controller
 public class StudentDashboardController {
@@ -22,6 +27,9 @@ public class StudentDashboardController {
 
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private GradeService gradeService;
 
     @GetMapping("/student/dashboard")
     public String showDashboard(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
@@ -36,6 +44,18 @@ public class StudentDashboardController {
             session.invalidate();
             redirectAttributes.addFlashAttribute("error", "Student not found");
             return "redirect:/student/login";
+        }
+        
+        // Load grades for each enrolled course
+        for (Course course : student.getEnrolledCourses()) {
+            List<Grade> grades = gradeService.getGradesByStudentIdAndCourseId(student.getId(), course.getId());
+            if (!grades.isEmpty()) {
+                Grade latestGrade = grades.get(0); // Get the most recent grade
+                if (student.getGrades() == null) {
+                    student.setGrades(new HashMap<>());
+                }
+                student.getGrades().put(course.getId().toString(), latestGrade.getLetterGrade());
+            }
         }
         
         model.addAttribute("student", student);

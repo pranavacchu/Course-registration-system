@@ -91,6 +91,48 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
+                        <h5 class="card-title">My Grades</h5>
+                        <div th:if="${#sets.isEmpty(student.enrolledCourses)}" class="alert alert-info">
+                            You are not enrolled in any courses yet.
+                        </div>
+                        <div th:unless="${#sets.isEmpty(student.enrolledCourses)}" class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Course Code</th>
+                                        <th>Course Name</th>
+                                        <th>Instructor</th>
+                                        <th>Grade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="course : ${student.enrolledCourses}">
+                                        <td th:text="${course.courseCode}"></td>
+                                        <td th:text="${course.courseName}"></td>
+                                        <td th:text="${course.instructor?.username ?: 'Not assigned'}"></td>
+                                        <td>
+                                            <span th:if="${student.grades != null && student.grades.containsKey(course.id.toString())}" 
+                                                  th:text="${student.grades.get(course.id.toString())}" 
+                                                  class="badge bg-success">
+                                            </span>
+                                            <span th:unless="${student.grades != null && student.grades.containsKey(course.id.toString())}" 
+                                                  class="badge bg-secondary">
+                                                Not Graded
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
                         <h5 class="card-title">Available Courses</h5>
                         <div th:if="${#lists.isEmpty(availableCourses)}" class="alert alert-info">
                             No courses available for enrollment at this time.
